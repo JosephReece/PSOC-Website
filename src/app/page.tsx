@@ -3,7 +3,6 @@
 // pages/index.js
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Head from 'next/head';
 import React from 'react';
 
 interface Player {
