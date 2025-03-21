@@ -17,15 +17,15 @@ interface Player {
 export default function Home() {
   // Sample data for the leaderboard with added quotes
   const players: Player[] = [
-    { id: 1, name: "Rufus 'Dizzy' Hannah", winnings: 2000, tournaments: 0, country: "UK", quote: "Nothing gets past the treasurer." },
-    { id: 2, name: "Joseph Reece", winnings: 20, tournaments: 1, country: "UK", quote: "I'd rather punt big than win small." },
+    { id: 1, name: "Rufus \"Dizzy\" Hannah", winnings: 2000, tournaments: 0, country: "UK", quote: "Nothing gets past the treasurer." },
+    { id: 2, name: "Joseph Reece", winnings: 20, tournaments: 1, country: "UK", quote: "I\'d rather punt big than win small." },
     { id: 3, name: "Ben Williamson", winnings: -100, tournaments: 0, country: "UK", quote: "Sometimes you have to lose it all to win big." },
-    { id: 4, name: "Max Lord", winnings: 5000, tournaments: 0, country: "UK", quote: "The cards you're dealt are just the beginning." },
-    { id: 5, name: "Josh 'Spence' Spencer", winnings: 400, tournaments: 0, country: "UK", quote: "Patience isn't just a virtue, it's a strategy." },
+    { id: 4, name: "Max Lord", winnings: 5000, tournaments: 0, country: "UK", quote: "The cards you\'re dealt are just the beginning." },
+    { id: 5, name: "Josh \"Spence\" Spencer", winnings: 400, tournaments: 0, country: "UK", quote: "Patience isn\"t just a virtue, it\'s a strategy." },
     { id: 6, name: "Daron Leipjan", winnings: 5, tournaments: 0, country: "UK", quote: "BAAAAAAAAD BEATTTTTTT." },
-    { id: 7, name: "Connor 'Bingoboy' Sandbrook", winnings: 1000, tournaments: 4, country: "UK", quote: "Gobble gobble." },
+    { id: 7, name: "Connor Sandbrook", winnings: 1000, tournaments: 4, country: "UK", quote: "Gobble gobble." },
     { id: 8, name: "Jason", winnings: 10000, tournaments: 2, country: "UK", quote: "Who has cash box?" },
-    { id: 9, name: "Josh 'Thwait' Micklethwait", winnings: 300, tournaments: 0, country: "UK", quote: "Fold when uncertain, fold when confident." },
+    { id: 9, name: "Josh \"Thwait\" Micklethwait", winnings: 300, tournaments: 0, country: "UK", quote: "Fold when uncertain, fold when confident." },
   ];
 
   const [sortConfig, setSortConfig] = useState<{
