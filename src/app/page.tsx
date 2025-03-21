@@ -5,9 +5,17 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 
+interface Player {
+  id: number;
+  name: string;
+  winnings: number;
+  tournaments: number;
+  country: string;
+}
+
 export default function Home() {
   // Sample data for the leaderboard
-  const [players, setPlayers] = useState([
+  const players: Player[] = [
     { id: 1, name: "Daniel Negreanu", winnings: 42000000, tournaments: 87, country: "Canada" },
     { id: 2, name: "Phil Ivey", winnings: 38500000, tournaments: 72, country: "USA" },
     { id: 3, name: "Bryn Kenney", winnings: 57000000, tournaments: 65, country: "USA" },
@@ -18,9 +26,12 @@ export default function Home() {
     { id: 8, name: "Jason Koon", winnings: 39500000, tournaments: 58, country: "USA" },
     { id: 9, name: "David Peters", winnings: 44000000, tournaments: 67, country: "USA" },
     { id: 10, name: "Stephen Chidwick", winnings: 37800000, tournaments: 63, country: "UK" },
-  ]);
+  ];
 
-  const [sortConfig, setSortConfig] = useState({
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Player;
+    direction: 'descending' | 'ascending';
+  }>({
     key: 'winnings',
     direction: 'descending'
   });
@@ -43,8 +54,8 @@ export default function Home() {
   );
 
   // Function to request sorting
-  const requestSort = (key) => {
-    let direction = 'ascending';
+  const requestSort = (key: keyof Player) => {
+    let direction: 'descending' | 'ascending' = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
     }
@@ -52,7 +63,7 @@ export default function Home() {
   };
 
   // Function to format currency
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -62,26 +73,26 @@ export default function Home() {
 
   // Animation variants for the squash effect
   const rowVariants = {
-    initial: { 
-      opacity: 0, 
+    initial: {
+      opacity: 0,
       height: 0,
       scaleY: 0.6,
       transformOrigin: "center"
     },
-    animate: { 
-      opacity: 1, 
+    animate: {
+      opacity: 1,
       height: "auto",
       scaleY: 1,
-      transition: { 
+      transition: {
         height: { duration: 0.3 },
         scaleY: { duration: 0.3, type: "spring", stiffness: 300 }
       }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       height: 0,
       scaleY: 0.6,
-      transition: { 
+      transition: {
         height: { duration: 0.2 },
         scaleY: { duration: 0.2 }
       }
@@ -97,7 +108,7 @@ export default function Home() {
       </Head>
 
       <main className="container mx-auto px-4 py-12">
-        <motion.h1 
+        <motion.h1
           className="text-5xl font-bold text-center mb-8 text-yellow-400"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,7 +117,7 @@ export default function Home() {
           Poker Tournament Leaderboard
         </motion.h1>
 
-        <motion.div 
+        <motion.div
           className="mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -121,7 +132,7 @@ export default function Home() {
           />
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="bg-gray-800 rounded-lg shadow-lg overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -149,7 +160,7 @@ export default function Home() {
               <tbody>
                 <AnimatePresence>
                   {filteredPlayers.map((player, index) => (
-                    <motion.tr 
+                    <motion.tr
                       key={player.id}
                       variants={rowVariants}
                       initial="initial"
@@ -182,7 +193,7 @@ export default function Home() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="mt-8 text-center text-gray-400"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
