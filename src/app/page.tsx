@@ -1,103 +1,196 @@
-import Image from "next/image";
+'use client';
+
+// pages/index.js
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Head from 'next/head';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // Sample data for the leaderboard
+  const [players, setPlayers] = useState([
+    { id: 1, name: "Daniel Negreanu", winnings: 42000000, tournaments: 87, country: "Canada" },
+    { id: 2, name: "Phil Ivey", winnings: 38500000, tournaments: 72, country: "USA" },
+    { id: 3, name: "Bryn Kenney", winnings: 57000000, tournaments: 65, country: "USA" },
+    { id: 4, name: "Justin Bonomo", winnings: 53000000, tournaments: 61, country: "USA" },
+    { id: 5, name: "Erik Seidel", winnings: 41000000, tournaments: 92, country: "USA" },
+    { id: 6, name: "Fedor Holz", winnings: 36500000, tournaments: 51, country: "Germany" },
+    { id: 7, name: "Phil Hellmuth", winnings: 29000000, tournaments: 110, country: "USA" },
+    { id: 8, name: "Jason Koon", winnings: 39500000, tournaments: 58, country: "USA" },
+    { id: 9, name: "David Peters", winnings: 44000000, tournaments: 67, country: "USA" },
+    { id: 10, name: "Stephen Chidwick", winnings: 37800000, tournaments: 63, country: "UK" },
+  ]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  const [sortConfig, setSortConfig] = useState({
+    key: 'winnings',
+    direction: 'descending'
+  });
+
+  // Filter state
+  const [filterValue, setFilterValue] = useState('');
+
+  // Function to sort the players
+  const sortedPlayers = [...players].sort((a, b) => {
+    if (sortConfig.direction === 'ascending') {
+      return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+    }
+    return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
+  });
+
+  // Function to filter players
+  const filteredPlayers = sortedPlayers.filter(player =>
+    player.name.toLowerCase().includes(filterValue.toLowerCase()) ||
+    player.country.toLowerCase().includes(filterValue.toLowerCase())
+  );
+
+  // Function to request sorting
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Function to format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
+  // Animation variants for the squash effect
+  const rowVariants = {
+    initial: { 
+      opacity: 0, 
+      height: 0,
+      scaleY: 0.6,
+      transformOrigin: "center"
+    },
+    animate: { 
+      opacity: 1, 
+      height: "auto",
+      scaleY: 1,
+      transition: { 
+        height: { duration: 0.3 },
+        scaleY: { duration: 0.3, type: "spring", stiffness: 300 }
+      }
+    },
+    exit: { 
+      opacity: 0,
+      height: 0,
+      scaleY: 0.6,
+      transition: { 
+        height: { duration: 0.2 },
+        scaleY: { duration: 0.2 }
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Head>
+        <title>Poker Tournament Leaderboard</title>
+        <meta name="description" content="Top poker tournament winners" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main className="container mx-auto px-4 py-12">
+        <motion.h1 
+          className="text-5xl font-bold text-center mb-8 text-yellow-400"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Poker Tournament Leaderboard
+        </motion.h1>
+
+        <motion.div 
+          className="mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <input
+            type="text"
+            placeholder="Search by name or country"
+            className="w-full p-3 bg-gray-800 rounded-lg text-white border border-gray-700 focus:outline-none focus:border-yellow-400"
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
+          />
+        </motion.div>
+
+        <motion.div 
+          className="bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-gray-700">
+                  <th className="px-6 py-4 text-left">Rank</th>
+                  <th className="px-6 py-4 text-left cursor-pointer" onClick={() => requestSort('name')}>
+                    Player Name {sortConfig.key === 'name' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                  </th>
+                  <th className="px-6 py-4 text-left cursor-pointer" onClick={() => requestSort('country')}>
+                    Country {sortConfig.key === 'country' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                  </th>
+                  <th className="px-6 py-4 text-right cursor-pointer" onClick={() => requestSort('winnings')}>
+                    Winnings {sortConfig.key === 'winnings' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                  </th>
+                  <th className="px-6 py-4 text-right cursor-pointer" onClick={() => requestSort('tournaments')}>
+                    Tournaments {sortConfig.key === 'tournaments' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <AnimatePresence>
+                  {filteredPlayers.map((player, index) => (
+                    <motion.tr 
+                      key={player.id}
+                      variants={rowVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      className={index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750'}
+                      whileHover={{ backgroundColor: 'rgba(234, 179, 8, 0.1)' }}
+                    >
+                      <td className="px-6 py-4 font-bold">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 font-medium">
+                        {player.name}
+                      </td>
+                      <td className="px-6 py-4">
+                        {player.country}
+                      </td>
+                      <td className="px-6 py-4 text-right text-yellow-400 font-bold">
+                        {formatCurrency(player.winnings)}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        {player.tournaments}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          className="mt-8 text-center text-gray-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          <p>Click on column headers to sort the leaderboard</p>
+        </motion.div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
