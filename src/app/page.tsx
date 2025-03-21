@@ -109,16 +109,41 @@ export default function Home() {
 
   // Animation variants for the quote expansion
   const quoteVariants = {
-    initial: { opacity: 0, height: 0 },
+    initial: {
+      opacity: 0,
+      height: 0,
+      x: -20,
+      scale: 0.95,
+      rotateX: -10
+    },
     animate: {
       opacity: 1,
       height: "auto",
-      transition: { duration: 0.3 }
+      x: 0,
+      scale: 1,
+      rotateX: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.4, 0, 0.2, 1],
+        height: {
+          duration: 0.3,
+        },
+        opacity: {
+          duration: 0.25,
+          delay: 0.1
+        }
+      }
     },
     exit: {
       opacity: 0,
       height: 0,
-      transition: { duration: 0.2 }
+      x: 20,
+      scale: 0.95,
+      rotateX: 10,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 1, 1]
+      }
     }
   };
 
@@ -156,92 +181,92 @@ export default function Home() {
           transition={{ delay: 0.3, duration: 0.5 }}
         >
           <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr className="bg-gray-700">
-                  <th className="px-6 py-4 text-left">Rank</th>
-                  <th className="px-6 py-4 text-left cursor-pointer" onClick={() => requestSort('name')}>
-                    Player Name {sortConfig.key === 'name' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-                  </th>
-                  <th className="px-6 py-4 text-left cursor-pointer" onClick={() => requestSort('country')}>
-                    Country {sortConfig.key === 'country' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-                  </th>
-                  <th className="px-6 py-4 text-right cursor-pointer" onClick={() => requestSort('winnings')}>
-                    Winnings {sortConfig.key === 'winnings' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-                  </th>
-                  <th className="px-6 py-4 text-right cursor-pointer" onClick={() => requestSort('tournaments')}>
-                    Tournaments {sortConfig.key === 'tournaments' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-                  </th>
-                  <th className="px-6 py-4 text-center">Quote</th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence>
-                  {filteredPlayers.map((player, index) => (
-                    <React.Fragment key={player.id}>
-                      <motion.tr
-                        variants={rowVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className={'hover:bg-yellow-700 ' + (index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700')}
-                        onClick={() => toggleRowExpansion(player.id)}
-                      >
-                        <td className="px-6 py-4 font-bold">
-                          {index + 1}
-                        </td>
-                        <td className="px-6 py-4 font-medium">
-                          {player.name}
-                        </td>
-                        <td className="px-6 py-4">
-                          {player.country}
-                        </td>
-                        <td className="px-6 py-4 text-right text-yellow-400 font-bold">
-                          {formatCurrency(player.winnings)}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          {player.tournaments}
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <button
-                            className='px-3 py-1 rounded text-sm font-medium transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-gray-200'
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleRowExpansion(player.id);
-                            }}
-                          >
-                            {expandedRow === player.id ? 'Hide Quote' : 'Show Quote'}
-                          </button>
-                        </td>
-                      </motion.tr>
-                      <AnimatePresence>
-                        {expandedRow === player.id && (
-                          <motion.tr
-                            variants={quoteVariants}
-                            initial="initial"
-                            animate="animate"
-                            exit="exit"
-                            className={index % 2 === 0 ? 'bg-gray-800 bg-opacity-50' : 'bg-gray-750 bg-opacity-50'}
-                          >
-                            <td className="px-6 py-4" colSpan={6}>
-                              <div className="flex items-center">
-                                <div className="w-8 h-8 flex-shrink-0 text-yellow-400 mr-3">
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                                  </svg>
-                                </div>
-                                <div className="italic text-yellow-300">"{player.quote}"</div>
+            <div className="min-w-full">
+              {/* Header */}
+              <div className="grid grid-cols-6 bg-gray-700">
+                <div className="px-6 py-4 text-left font-semibold">Rank</div>
+                <div className="px-6 py-4 text-left cursor-pointer font-semibold" onClick={() => requestSort('name')}>
+                  Player Name {sortConfig.key === 'name' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                </div>
+                <div className="px-6 py-4 text-left cursor-pointer font-semibold" onClick={() => requestSort('country')}>
+                  Country {sortConfig.key === 'country' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                </div>
+                <div className="px-6 py-4 text-right cursor-pointer font-semibold" onClick={() => requestSort('winnings')}>
+                  Winnings {sortConfig.key === 'winnings' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                </div>
+                <div className="px-6 py-4 text-right cursor-pointer font-semibold" onClick={() => requestSort('tournaments')}>
+                  Tournaments {sortConfig.key === 'tournaments' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                </div>
+                <div className="px-6 py-4 text-center font-semibold">Quote</div>
+              </div>
+
+              {/* Rows */}
+              <AnimatePresence>
+                {filteredPlayers.map((player, index) => (
+                  <React.Fragment key={player.id}>
+                    <motion.div
+                      variants={rowVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      className={'grid grid-cols-6 hover:bg-yellow-700 ' + (index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700')}
+                      onClick={() => toggleRowExpansion(player.id)}
+                    >
+                      <div className="px-6 py-4 font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="px-6 py-4 font-medium">
+                        {player.name}
+                      </div>
+                      <div className="px-6 py-4">
+                        {player.country}
+                      </div>
+                      <div className="px-6 py-4 text-right text-yellow-400 font-bold">
+                        {formatCurrency(player.winnings)}
+                      </div>
+                      <div className="px-6 py-4 text-right">
+                        {player.tournaments}
+                      </div>
+                      <div className="px-6 py-4 text-center">
+                        <button
+                          className='px-3 py-1 rounded text-sm font-medium transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-gray-200'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleRowExpansion(player.id);
+                          }}
+                        >
+                          {expandedRow === player.id ? 'Hide Quote' : 'Show Quote'}
+                        </button>
+                      </div>
+                    </motion.div>
+
+                    <AnimatePresence>
+                      {expandedRow === player.id && (
+                        <motion.div
+                          variants={quoteVariants}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
+                          className={index % 2 === 0 ? 'bg-gray-800 bg-opacity-50' : 'bg-gray-750 bg-opacity-50'}
+                        >
+                          <div className="px-6 py-4 col-span-6">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 flex-shrink-0 text-yellow-400 mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                </svg>
                               </div>
-                            </td>
-                          </motion.tr>
-                        )}
-                      </AnimatePresence>
-                    </React.Fragment>
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
+                              <div className="italic text-yellow-300">"{player.quote}"</div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </React.Fragment>
+                ))}
+              </AnimatePresence>
+            </div>
           </div>
         </motion.div>
 
