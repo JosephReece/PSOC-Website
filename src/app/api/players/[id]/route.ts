@@ -1,26 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { deletePlayer } from '@/lib/players';
+import { NextResponse } from 'next/server';
 
-export async function DELETE(
-  request: NextRequest,
-  params: any
-) {
+export async function DELETE({...params}) {
   try {
-    const playerId = parseInt(params.id, 10);
-    
-    if (isNaN(playerId)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid player ID' },
-        { status: 400 }
-      );
-    }
-    
-    const updatedPlayers = await deletePlayer(playerId);
-    
+    console.log(params);
+
     return NextResponse.json({ 
       success: true, 
-      message: 'Player deleted successfully',
-      players: updatedPlayers
+      message: 'Player deleted successfully'
     });
   } catch (error) {
     console.error(`Error in DELETE /api/players/${params.id}:`, error);
