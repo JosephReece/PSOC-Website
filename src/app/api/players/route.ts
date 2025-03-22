@@ -11,7 +11,7 @@ import {
 export async function GET() {
   try {
     // Try to get existing players, otherwise initialize with defaults
-    let players = await getPlayersFromBlobStorage();
+    const players = await getPlayersFromBlobStorage();
     
     return NextResponse.json({ success: true, players });
   } catch (error) {

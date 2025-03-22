@@ -17,12 +17,12 @@ import {
 export default function NotFound() {
 
   const dice = [
-    <Dice1 width={32} height={32} />,
-    <Dice2 width={32} height={32} />,
-    <Dice3 width={32} height={32} />,
-    <Dice4 width={32} height={32} />,
-    <Dice5 width={32} height={32} />,
-    <Dice6 width={32} height={32} />,
+    <Dice1 key={0} width={32} height={32} />,
+    <Dice2 key={1} width={32} height={32} />,
+    <Dice3 key={2} width={32} height={32} />,
+    <Dice4 key={3} width={32} height={32} />,
+    <Dice5 key={4} width={32} height={32} />,
+    <Dice6 key={5} width={32} height={32} />,
   ]
 
   const [diceIndex, setDiceIndex] = useState(Math.floor(Math.random() * 6));

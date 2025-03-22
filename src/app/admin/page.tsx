@@ -25,9 +25,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Player } from '@/lib/players';
 
-interface AdminPageProps {}
-
-export default function AdminPage({}: AdminPageProps) {
+export default function AdminPage() {
   const router = useRouter();
   
   // Authentication state
