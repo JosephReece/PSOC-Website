@@ -3,7 +3,7 @@ import { deletePlayer } from '@/lib/players';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  params: any
 ) {
   try {
     const playerId = parseInt(params.id, 10);
