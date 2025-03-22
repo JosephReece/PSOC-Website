@@ -1,15 +1,12 @@
-// Create a separate file for DELETE operation
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  deletePlayer, 
-} from '@/lib/players';
+import { deletePlayer } from '@/lib/players';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const playerId = parseInt(params.id, 10);
+    const playerId = parseInt(context.params.id, 10);
     
     if (isNaN(playerId)) {
       return NextResponse.json(
@@ -26,7 +23,7 @@ export async function DELETE(
       players: updatedPlayers
     });
   } catch (error) {
-    console.error(`Error in DELETE /api/players/${params.id}:`, error);
+    console.error(`Error in DELETE /api/players/${context.params.id}:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to delete player' },
       { status: 500 }
