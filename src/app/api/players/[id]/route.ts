@@ -3,10 +3,10 @@ import { deletePlayer } from '@/lib/players';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const playerId = parseInt(params.id);
+    const playerId = parseInt((await params).id);
 
     if (isNaN(playerId)) {
       return NextResponse.json(
@@ -23,7 +23,7 @@ export async function DELETE(
       players: updatedPlayers
     });
   } catch (error) {
-    console.error(`Error in DELETE /api/players/${params.id}:`, error);
+    console.error(`Error in DELETE:`, error);
     return NextResponse.json(
       { success: false, error: 'Failed to delete player' },
       { status: 500 }
